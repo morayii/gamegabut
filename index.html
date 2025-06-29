@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Lompat Lucu</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f8ff;
+      font-family: sans-serif;
+    }
+
+    #game {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(to top, #c2f0f7, #ffffff);
+      overflow: hidden;
+      position: relative;
+      border-bottom: 4px solid #7ec850;
+    }
+
+    #character {
+      width: 50px;
+      height: 50px;
+      background: url('https://i.imgur.com/o8Q5Z4t.png') no-repeat center / cover;
+      position: absolute;
+      bottom: 0;
+      left: 50px;
+    }
+
+    #obstacle {
+      width: 30px;
+      height: 50px;
+      background: url('https://i.imgur.com/xycHeNR.png') no-repeat center / cover;
+      position: absolute;
+      bottom: 0;
+      right: -30px;
+      animation: moveObstacle 2s linear infinite;
+    }
+
+    @keyframes moveObstacle {
+      0% { right: -30px; }
+      100% { right: 100%; }
+    }
+
+    .jump {
+      animation: jump 0.5s ease-out;
+    }
+
+    @keyframes jump {
+      0%   { bottom: 0; }
+      50%  { bottom: 120px; }
+      100% { bottom: 0; }
+    }
+
+    #gameover {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      color: red;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game">
+  <div id="character"></div>
+  <div id="obstacle"></div>
+  <div id="gameover">GAME OVER 😵</div>
+</div>
+
+<script>
+  const character = document.getElementById("character");
+  const obstacle = document.getElementById("obstacle");
+  const gameOver = document.getElementById("gameover");
+
+  function jump() {
+    if (!character.classList.contains("jump")) {
+      character.classList.add("jump");
+      setTimeout(() => character.classList.remove("jump"), 500);
+    }
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.code === "Space") jump();
+  });
+
+  setInterval(() => {
+    const charTop = parseInt(window.getComputedStyle(character).getPropertyValue("bottom"));
+    const obsLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("right"));
+
+    if (obsLeft > window.innerWidth - 130 && obsLeft < window.innerWidth - 80 && charTop < 50) {
+      gameOver.style.display = "block";
+      obstacle.style.animation = "none";
+      document.removeEventListener("keydown", jump);
+    }
+  }, 10);
+</script>
+
+</body>
+</html>
